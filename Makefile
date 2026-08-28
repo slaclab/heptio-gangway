@@ -14,12 +14,12 @@
 
 PROJECT := gangway
 # Where to push the docker image.
-REGISTRY ?= gcr.io/heptio-images
+REGISTRY ?= docker.io/slaclab
 IMAGE := $(REGISTRY)/$(PROJECT)
 SRCDIRS := ./cmd/gangway
 PKGS := $(shell go list ./cmd/... ./internal/...)
 
-VERSION ?= master
+VERSION ?= v3.2.0-debian
 
 all: build
 
@@ -68,4 +68,8 @@ image:
 push:
 	docker push $(IMAGE):$(VERSION)
 
-.PHONY: all deps bindata test image setup
+podman-push:
+	podman build -t $(IMAGE):$(VERSION) .
+	podman push $(IMAGE):$(VERSION)
+
+.PHONY: all deps bindata test image setup podman-push
